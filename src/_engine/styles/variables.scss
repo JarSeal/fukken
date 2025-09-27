@@ -1,0 +1,43 @@
+@use 'sass:color';
+
+// Colors
+$white: #ffffff;
+$black: #000000;
+$debugGuiBackground: #1f1f1f;
+$debugGuiBackgroundLighter: #181818;
+$debugGuiBackgroundLighter2: #2e2e2e;
+$debugGuiBackgroundDarker: #111111;
+$debugTabButton: #1f1f1f;
+$debugTextColor: #bbbcc4;
+$debugTextColorDark: color.adjust($debugTextColor, $lightness: -20%);
+$debugOnScreenAlphaBack: rgba($debugTextColor, 0.2);
+
+// Drawer
+$drawerWidth: 40rem;
+$drawerWidthSmall: 30rem;
+
+// Breakpoints
+$breakpointXLarge: 1199px;
+$breakpointLarge: 899px;
+$breakpointMedium: 739px;
+$breakpointSmall: 479px;
+$breakpointXSmall: 379px;
+
+$errorDark: #701515;
+
+// Border radius
+$borderRadiusSmall: 0.4rem;
+
+// Draggable window
+$dragWinContentPadding: 1rem;
+
+// Naked styles
+@mixin nakedButton {
+  border-radius: 0;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  background: $white;
+  cursor: pointer;
+}
