@@ -45,6 +45,8 @@ export type CharacterObject = {
 let characters: { [id: string]: CharacterObject } = {};
 let onDeleteCharacter: { [characterId: string]: () => void } = {};
 
+export const getCharacter = (id: string) => characters[id];
+
 /**
  * Creates a character with controls. The character can be either a player controllable
  * character or controlled by an agent (AI).

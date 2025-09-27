@@ -5,18 +5,28 @@ import { createSkyBox } from '../_engine/core/SkyBox';
 import { getCamera, setCurrentCamera } from '../_engine/core/Camera';
 import { getLoaderStatusUpdater } from '../_engine/core/SceneLoader';
 import { MAIN_APP_CAM_ID } from '../CONFIG';
-import { createPhysicsObjectWithMesh, getPhysicsObject } from '../_engine/core/PhysicsRapier';
+import {
+  createPhysicsObjectWithMesh,
+  createPhysicsObjectWithoutMesh,
+  getPhysicsObject,
+  PhysicsObject,
+} from '../_engine/core/PhysicsRapier';
 import { createMaterial } from '../_engine/core/Material';
 import { createMesh } from '../_engine/core/Mesh';
 import { createGeometry } from '../_engine/core/Geometry';
 import { createFighterCharacter } from './battleCharacter';
+import { deathAnim, winAnim } from './deathAndWin';
+import { loadTextureAsync } from '../_engine/core/Texture';
 
 export const BATTLE_SCENE_ID = 'battleScene';
+let dyingPlayerNumber = '0';
 
 export const battleScene = async () =>
   new Promise<string>(async (resolve) => {
     const updateLoaderFn = getLoaderStatusUpdater();
     updateLoaderFn({ loadedCount: 0, totalCount: 2 });
+
+    dyingPlayerNumber = '0';
 
     // Set current camera and position it
     const camera = getCamera(MAIN_APP_CAM_ID);
@@ -62,6 +72,11 @@ export const battleScene = async () =>
     //   ],
     //   updateLoadStatusFn
     // );
+
+    await loadTextureAsync({
+      id: 'smokeTexture',
+      fileName: '/models/smoke1.png',
+    });
 
     // Lights
     const ambient = createLight({
@@ -141,6 +156,70 @@ export const battleScene = async () =>
       meshOrMeshId: groundMesh,
     });
     scene.add(groundMesh);
+
+    // Add death area
+    const deathAreaWidth = 80;
+    const deathAreaDepth = 10;
+    const deathAreaHeight = 5;
+    const deathAreaPos = { x: 0, y: -10, z: 0 };
+    const deathAreaGeo = createGeometry({
+      id: 'deathArea',
+      type: 'BOX',
+      params: { width: deathAreaWidth, height: deathAreaHeight, depth: deathAreaDepth },
+    });
+    const deathAreaMat = createMaterial({
+      id: 'deathArea',
+      type: 'LAMBERT',
+      params: { color: 0x333333 },
+    });
+    const deathAreaMesh = createMesh({
+      id: 'deathAreaMesh',
+      geo: deathAreaGeo,
+      mat: deathAreaMat,
+      receiveShadow: true,
+      castShadow: true,
+    });
+    deathAreaMesh.position.set(deathAreaPos.x, deathAreaPos.y, deathAreaPos.z);
+    createPhysicsObjectWithMesh({
+      physicsParams: {
+        collider: {
+          type: 'BOX',
+          hx: deathAreaWidth / 2,
+          hy: deathAreaHeight / 2,
+          hz: deathAreaDepth / 2,
+          friction: 0,
+        },
+        rigidBody: { rigidType: 'FIXED', translation: deathAreaPos },
+      },
+      meshOrMeshId: deathAreaMesh,
+    });
+    scene.add(deathAreaMesh);
+    createPhysicsObjectWithoutMesh({
+      id: 'deathSensor',
+      physicsParams: {
+        collider: {
+          type: 'BOX',
+          hx: deathAreaWidth / 2,
+          hy: deathAreaHeight / 2,
+          hz: deathAreaDepth / 2,
+          isSensor: true,
+          collisionEventFn: (obj1, obj2, started) => {
+            if (!started) return;
+            let obj: PhysicsObject | null = null;
+            if (obj1.id.startsWith('fighterCharacter')) {
+              dyingPlayerNumber = obj1.id.split('-')[1];
+              obj = obj1;
+            } else if (obj2.id.startsWith('fighterCharacter')) {
+              dyingPlayerNumber = obj2.id.split('-')[1];
+              obj = obj2;
+            }
+            if (obj) deathAnim(obj);
+            winAnim(dyingPlayerNumber);
+          },
+          translation: { x: deathAreaPos.x, y: deathAreaPos.y + 0.2, z: deathAreaPos.z },
+        },
+      },
+    });
 
     // Add battle character 1
     const { charMesh: charMesh1, fighterCharacterObject: fighterCharacterObject1 } =

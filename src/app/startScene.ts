@@ -178,7 +178,6 @@ export const startScene = async () =>
     updateLoaderFn({ loadedCount: 2, totalCount: 2 });
 
     const startBattleFn = (e: KeyboardEvent) => {
-      console.log(e.key);
       if (e.key === ' ') {
         // Load scene
         loadScene({ nextSceneFn: battleScene });
