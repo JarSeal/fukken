@@ -21,7 +21,7 @@ export const battleScene = async () =>
     // Set current camera and position it
     const camera = getCamera(MAIN_APP_CAM_ID);
     setCurrentCamera(MAIN_APP_CAM_ID);
-    camera.position.z = -15;
+    camera.position.z = -9;
     camera.position.x = 0;
     camera.position.y = 1.5;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -87,13 +87,13 @@ export const battleScene = async () =>
       id: 'directionalLight',
       type: 'DIRECTIONAL',
       params: {
-        position: { x: -5, y: 2.5, z: 2.5 },
+        position: { x: -8, y: 3.5, z: 4.5 },
         color: 0xffe5c7,
         // intensity: Math.PI,
         intensity: 5,
         castShadow: true,
         shadowMapSize: [2048, 2048],
-        shadowCamNearFar: [1, 15],
+        shadowCamNearFar: [0.5, 35],
         shadowCamLeftRightTopBottom: [-10, 10, 10, -10],
         shadowBias: 0,
         shadowNormalBias: 0,
