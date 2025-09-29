@@ -17,6 +17,7 @@ import { createGeometry } from '../_engine/core/Geometry';
 import { createFighterCharacter } from './battleCharacter';
 import { deathAnim, winAnim } from './deathAndWin';
 import { loadTextureAsync } from '../_engine/core/Texture';
+import { importModelAsync } from '../_engine/core/ImportModel';
 
 export const BATTLE_SCENE_ID = 'battleScene';
 let dyingPlayerNumber = '0';
@@ -221,6 +222,17 @@ export const battleScene = async () =>
       },
     });
 
+    await importModelAsync<THREE.Mesh>({
+      id: 'leftArm',
+      fileName: '/models/leftArm.glb',
+      throwOnError: true,
+    });
+    await importModelAsync<THREE.Mesh>({
+      id: 'rightArm',
+      fileName: '/models/rightArm.glb',
+      throwOnError: true,
+    });
+
     // Add battle character 1
     const { charMesh: charMesh1, fighterCharacterObject: fighterCharacterObject1 } =
       createFighterCharacter(1, {
@@ -228,6 +240,7 @@ export const battleScene = async () =>
           moveLeft: ['a', 'A'],
           moveRight: ['d', 'D'],
           jump: ['w', 'W'],
+          hit: ['s', 'S'],
         },
       });
     const charPhysObj1 = getPhysicsObject(fighterCharacterObject1.physObjectId);
@@ -241,6 +254,7 @@ export const battleScene = async () =>
           moveLeft: 'ArrowLeft',
           moveRight: 'ArrowRight',
           jump: 'ArrowUp',
+          hit: 'ArrowDown',
         },
       });
     const charPhysObj2 = getPhysicsObject(fighterCharacterObject2.physObjectId);

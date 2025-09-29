@@ -178,6 +178,8 @@ const mainLoopForProduction = async () => {
     deltaApp = dt * loopState.playSpeedMultiplier;
     // app loopers
     runSceneAppLoopers(deltaApp);
+    // Update loop action inputs
+    updateInputControllerLoopActions(deltaApp);
     await (getRenderer() as Renderer)
       .renderAsync(getRootScene() as Scene, getCurrentCamera())
       .then(() => runSceneMainLateLoopers(delta));
@@ -212,6 +214,8 @@ const mainLoopForProductionWithFPSLimiter = async () => {
     deltaApp = dt * loopState.playSpeedMultiplier;
     // app loopers
     runSceneAppLoopers(deltaApp);
+    // Update loop action inputs
+    updateInputControllerLoopActions(deltaApp);
     accDeltaApp += dt;
     if (accDeltaApp > loopState.maxFPSInterval) {
       await renderer.renderAsync(rootScene, getCurrentCamera()).then(() => {

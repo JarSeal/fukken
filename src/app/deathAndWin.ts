@@ -5,7 +5,7 @@ import { createSceneMainLooper, getCurrentScene } from '../_engine/core/Scene';
 import { getTexture } from '../_engine/core/Texture';
 import { deleteKeyInputControl } from '../_engine/core/InputControls';
 import { getCharacter } from '../_engine/core/Character';
-import { CMP, getCmpById } from '../_engine/utils/CMP';
+import { CMP } from '../_engine/utils/CMP';
 import { getHUDRootCMP } from '../_engine/core/HUD';
 import { getCurrentCamera } from '../_engine/core/Camera';
 
@@ -139,6 +139,7 @@ export const winAnim = (dyingNumber: string) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          pointerEvents: 'none',
         },
       })
     );
